@@ -2,11 +2,14 @@
 export const asset = (p: string) =>
   `${import.meta.env.BASE_URL}${p.replace(/^\//, '')}`
 
-export const SECTIONS = [
-  { id: 'perception', label: '三模态感知' },
-  { id: 'alignment', label: '时间的秘密' },
-  { id: 'diagnosis', label: '五维诊断' },
-  { id: 'training', label: '训练闭环' },
+// Top-nav routes (HashRouter paths). Home is separate.
+export const ROUTES = [
+  { path: '/perception', label: '三模态感知' },
+  { path: '/alignment', label: '时间对齐' },
+  { path: '/diagnosis', label: '五维诊断' },
+  { path: '/studio', label: '训练闭环' },
+  { path: '/courses', label: '课程体系' },
+  { path: '/about', label: '了解项目' },
 ] as const
 
 // Shared framer-motion reveal variants

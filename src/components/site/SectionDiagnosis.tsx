@@ -12,7 +12,7 @@ import { Smile, AudioLines, Timer, Wind, Waves, Sparkles } from 'lucide-react'
 import type { DimensionKey } from '@/types'
 import { cn } from '@/lib/utils'
 import { SectionHead, Reveal } from './Reveal'
-import { Soundwave } from './Soundwave'
+import { AirflowCompare } from './AirflowCompare'
 
 const DIM_ICON: Record<DimensionKey, typeof Smile> = {
   lip_shape: Smile,
@@ -133,13 +133,13 @@ export function SectionDiagnosis() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="mx-auto mt-12 max-w-xl"
+              className="mx-auto mt-12 max-w-2xl"
             >
-              <div className="rounded-3xl border border-border bg-card p-8 text-center">
-                <p className="mb-4 text-sm font-medium text-teal">
-                  正在分析「{s.pinyin}」的唇形、声学与气流…
+              <div className="rounded-3xl border border-border bg-card p-8">
+                <p className="mb-4 text-center text-sm font-medium text-teal">
+                  正在采集「{s.pinyin}」的发音，并与标准模板逐帧比对…
                 </p>
-                <Soundwave height={120} bars={72} />
+                <AirflowCompare weak={s.weak} seed={idx} height={150} />
               </div>
             </motion.div>
           )}
@@ -149,8 +149,18 @@ export function SectionDiagnosis() {
               key="done"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-12 grid gap-6 lg:grid-cols-[1.1fr_1fr]"
+              className="mt-12 space-y-6"
             >
+              {/* capture → compare process */}
+              <div className="rounded-3xl border border-border bg-card p-6 shadow-xl shadow-teal/5">
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-sm font-medium text-ink">发音过程 · 气流包络对比</p>
+                  <span className="text-xs text-muted-foreground">你的发音 vs 标准模板</span>
+                </div>
+                <AirflowCompare weak={s.weak} seed={idx} height={170} />
+              </div>
+
+              <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
               {/* radar + overall */}
               <div className="rounded-3xl border border-border bg-card p-6 shadow-xl shadow-teal/5">
                 <div className="flex items-center justify-between">
@@ -271,6 +281,7 @@ export function SectionDiagnosis() {
                     同一份诊断，由 Coze 多 Agent 自动翻译成家长、老师、孩子各自能懂的话。
                   </p>
                 </div>
+              </div>
               </div>
             </motion.div>
           )}
