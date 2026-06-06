@@ -11,7 +11,6 @@ import {
 } from 'lucide-react'
 import { asset, fadeUp, stagger } from '@/lib/site'
 import { Soundwave } from '@/components/site/Soundwave'
-import { Reveal } from '@/components/site/Reveal'
 import { ImgSlot } from '@/components/site/ImgSlot'
 
 const CARDS = [
@@ -147,31 +146,47 @@ export function Home() {
         </div>
       </section>
 
-      {/* vision video */}
-      <section className="px-5 pb-16">
-        <div className="mx-auto max-w-5xl">
-          <Reveal className="group relative overflow-hidden rounded-3xl border border-border shadow-xl shadow-teal/10">
-            <div className="relative aspect-video bg-ink">
-              <video
-                src={asset('hero.mp4')}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="h-full w-full object-cover"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/10 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-9">
-                <p className="text-sm font-medium text-amber">A Moment of Hope · 愿景短片</p>
-                <h2 className="mt-1.5 text-2xl font-semibold text-white sm:text-3xl">
-                  让每一个想说话的孩子，都能被听见
-                </h2>
-                <p className="mt-2 max-w-xl text-sm text-white/80">
-                  技术的终点不是分数，而是一个孩子第一次清楚地喊出「妈妈」。
-                </p>
-              </div>
-            </div>
-          </Reveal>
+      {/* 通栏视频横幅 —— 参考 cuedspeech.org:全宽循环视频 + 悬浮白字 */}
+      <section className="relative mb-20 w-full overflow-hidden">
+        <div className="relative h-[62vh] min-h-[440px] w-full">
+          <video
+            src={asset('hero.mp4')}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          {/* 压暗遮罩,保证白字清晰 */}
+          <div className="pointer-events-none absolute inset-0 bg-ink/40" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/25 to-ink/45" />
+          {/* 悬浮白字 */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 mx-auto flex h-full max-w-3xl flex-col items-center justify-center px-6 text-center"
+          >
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm">
+              A Moment of Hope · 愿景短片
+            </span>
+            <h2 className="mt-5 text-balance text-3xl font-semibold leading-[1.15] text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
+              让每一个想说话的孩子，
+              <br className="hidden sm:block" />
+              都能被听见
+            </h2>
+            <p className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-white/85 drop-shadow sm:text-lg">
+              技术的终点不是分数，而是一个孩子第一次清楚地喊出「妈妈」。
+            </p>
+            <Link
+              to="/perception"
+              className="group mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-white px-7 text-base font-semibold text-ink shadow-lg transition-transform hover:-translate-y-0.5"
+            >
+              打开摄像头体验
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </motion.div>
         </div>
       </section>
 
