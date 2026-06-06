@@ -1,0 +1,234 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   SonicSight design tokens
+   - Neutral base: Slate (shadcn)
+   - Brand: #1F4E79 (主蓝) / #2E75B6 (辅助蓝)
+   - Primary action color = brand 主蓝
+   ============================================================ */
+:root {
+  --radius: 0.9rem;
+
+  /* SonicSight brand — derived from the trademark gradient
+     (deep teal → warm amber, navy ink wordmark) */
+  --ink: #1b2b3a;
+  --teal-deep: #134e5a;
+  --teal: #1f7a86;
+  --teal-light: #4aa9b3;
+  --amber: #e0934a;
+  --amber-light: #f0b277;
+  --sand: #f4efe7;
+
+  --brand: #1f7a86;        /* primary = teal */
+  --brand-light: #4aa9b3;
+  --brand-foreground: #ffffff;
+
+  /* audience accent (default = brand). Overridden by [data-audience] */
+  --accent-audience: #1f4e79;
+  --accent-audience-soft: #e8eff6;
+  --accent-audience-foreground: #ffffff;
+
+  /* base (light) — warm off-white with a teal undertone */
+  --background: #fbfcfb;
+  --foreground: #1b2b3a;
+  --card: #ffffff;
+  --card-foreground: #1b2b3a;
+  --popover: #ffffff;
+  --popover-foreground: #1b2b3a;
+  --primary: #1f7a86;
+  --primary-foreground: #ffffff;
+  --secondary: oklch(0.968 0.007 247.896);
+  --secondary-foreground: oklch(0.208 0.042 265.755);
+  --muted: oklch(0.968 0.007 247.896);
+  --muted-foreground: oklch(0.554 0.046 257.417);
+  --accent: oklch(0.968 0.007 247.896);
+  --accent-foreground: oklch(0.208 0.042 265.755);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(0.929 0.013 255.508);
+  --input: oklch(0.929 0.013 255.508);
+  --ring: oklch(0.704 0.04 256.788);
+
+  --muted: #eef3f3;
+  --muted-foreground: #5a6b76;
+  --border: #e3e9e8;
+  --input: #e3e9e8;
+  --ring: #4aa9b3;
+
+  /* radar / chart palette (5 dims) — teal → amber */
+  --chart-1: #134e5a;
+  --chart-2: #1f7a86;
+  --chart-3: #4aa9b3;
+  --chart-4: #e0934a;
+  --chart-5: #f0b277;
+}
+
+.dark {
+  --brand: #4a90d9;
+  --brand-light: #6aa9e6;
+  --brand-foreground: #0b1a2b;
+
+  --accent-audience: #4a90d9;
+  --accent-audience-soft: #1a2c40;
+  --accent-audience-foreground: #ffffff;
+
+  --background: oklch(0.129 0.042 264.695);
+  --foreground: oklch(0.984 0.003 247.858);
+  --card: oklch(0.208 0.042 265.755);
+  --card-foreground: oklch(0.984 0.003 247.858);
+  --popover: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.984 0.003 247.858);
+  --primary: #4a90d9;
+  --primary-foreground: #0b1a2b;
+  --secondary: oklch(0.279 0.041 260.031);
+  --secondary-foreground: oklch(0.984 0.003 247.858);
+  --muted: oklch(0.279 0.041 260.031);
+  --muted-foreground: oklch(0.704 0.04 256.788);
+  --accent: oklch(0.279 0.041 260.031);
+  --accent-foreground: oklch(0.984 0.003 247.858);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.551 0.027 264.364);
+}
+
+/* ============================================================
+   Audience theming
+   Apply `data-audience="parent|teacher|child"` on a wrapper.
+   Components reference --accent-audience / -soft / -foreground.
+   ============================================================ */
+[data-audience="parent"] {
+  --accent-audience: #e8a87c;          /* 温暖橙 */
+  --accent-audience-soft: #fbeee4;
+  --accent-audience-foreground: #5c3a22;
+}
+[data-audience="teacher"] {
+  --accent-audience: #2c5f8d;          /* 专业深蓝 */
+  --accent-audience-soft: #e4edf5;
+  --accent-audience-foreground: #ffffff;
+}
+[data-audience="child"] {
+  --accent-audience: #f8b195;          /* 活泼粉黄 */
+  --accent-audience-soft: #fdeee7;
+  --accent-audience-foreground: #6b3a28;
+  --radius: 1.5rem;                    /* 孩子模式圆角更大 */
+}
+
+/* ============================================================
+   Tailwind v4 theme mapping (utility names -> tokens)
+   ============================================================ */
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-brand: var(--brand);
+  --color-brand-light: var(--brand-light);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-ink: var(--ink);
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-teal-light: var(--teal-light);
+  --color-amber: var(--amber);
+  --color-amber-light: var(--amber-light);
+  --color-sand: var(--sand);
+  --color-au: var(--accent-audience);
+  --color-au-soft: var(--accent-audience-soft);
+  --color-au-foreground: var(--accent-audience-foreground);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "PingFang TC", "Microsoft YaHei", "Noto Sans SC",
+    system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  ::selection {
+    background: color-mix(in oklch, var(--teal) 28%, transparent);
+  }
+}
+
+/* ============================================================
+   SonicSight site helpers
+   ============================================================ */
+.bg-grain {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklch, var(--teal) 16%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, var(--teal-deep), var(--teal) 45%, var(--amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) }
+  50% { transform: translateY(-14px) }
+}
+.animate-float-slow { animation: float-slow 7s ease-in-out infinite; }
+
+@keyframes wave-dash {
+  to { stroke-dashoffset: -1000; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.animate-pulse-soft { animation: pulse-soft 2.4s ease-in-out infinite; }
+
+.glass {
+  background: color-mix(in oklch, var(--card) 72%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
