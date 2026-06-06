@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Hand, MapPin, Wind, Waves, Languages, Volume2, PlayCircle, ExternalLink, BookOpen } from 'lucide-react'
 import { SectionHead, Reveal } from '@/components/site/Reveal'
+import { ImgSlot } from '@/components/site/ImgSlot'
 import { fadeUp, stagger } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
@@ -70,10 +71,10 @@ const RESOURCES = [
 ]
 
 const PACKS = [
-  { icon: Waves, title: '鼻音化矫正', focus: 'b / p / d / t / g / k', desc: '针对该口腔音却带鼻音的典型问题，强化口鼻气流分离。' },
-  { icon: Wind, title: '气流强化训练', focus: 'p / t / k 送气音', desc: '用可视化送气反馈，提升爆破音的气流力度。' },
-  { icon: Volume2, title: '舌根音专项', focus: 'g / k / h', desc: '纠正舌位前移，避免听起来像 d / t / x。' },
-  { icon: Languages, title: '塞擦音专项', focus: 'z c s / zh ch sh', desc: '稳定舌位，区分平翘舌，减少音被替换。' },
+  { icon: Waves, title: '鼻音化矫正', focus: 'b / p / d / t / g / k', desc: '针对该口腔音却带鼻音的典型问题，强化口鼻气流分离。', img: 'img/pack-nasal.jpg' },
+  { icon: Wind, title: '气流强化训练', focus: 'p / t / k 送气音', desc: '用可视化送气反馈，提升爆破音的气流力度。', img: 'img/pack-airflow.jpg' },
+  { icon: Volume2, title: '舌根音专项', focus: 'g / k / h', desc: '纠正舌位前移，避免听起来像 d / t / x。', img: 'img/pack-tongue.jpg' },
+  { icon: Languages, title: '塞擦音专项', focus: 'z c s / zh ch sh', desc: '稳定舌位，区分平翘舌，减少音被替换。', img: 'img/pack-affricate.jpg' },
 ]
 
 export function Courses() {
@@ -210,17 +211,21 @@ export function Courses() {
           <SectionHead align="left" kicker="对症下药" title="专项训练包" />
           <div className="mt-8 grid gap-5 sm:grid-cols-2">
             {PACKS.map((p) => (
-              <Reveal key={p.title} className="rounded-3xl border border-border bg-card p-6">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal/10 text-teal">
-                    <p.icon className="h-5 w-5" />
+              <Reveal key={p.title} className="overflow-hidden rounded-3xl border border-border bg-card">
+                <div className="relative h-28 w-full overflow-hidden">
+                  <ImgSlot src={p.img} alt={p.title} />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
+                  <span className="absolute bottom-3 left-4 flex items-center gap-2.5">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/90 text-teal shadow-sm backdrop-blur">
+                      <p.icon className="h-5 w-5" />
+                    </span>
+                    <span>
+                      <h4 className="text-lg font-semibold text-ink">{p.title}</h4>
+                      <p className="font-mono text-xs text-amber">{p.focus}</p>
+                    </span>
                   </span>
-                  <div>
-                    <h4 className="text-lg font-semibold text-ink">{p.title}</h4>
-                    <p className="font-mono text-xs text-amber">{p.focus}</p>
-                  </div>
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{p.desc}</p>
+                <p className="px-6 py-4 text-sm leading-relaxed text-muted-foreground">{p.desc}</p>
               </Reveal>
             ))}
           </div>

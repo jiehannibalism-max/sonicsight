@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Check, X, Hand, Ear, Baby, HeartPulse, GraduationCap } from 'lucide-react'
 import { SectionHead, Reveal } from '@/components/site/Reveal'
+import { TechFoundation } from '@/components/site/TechFoundation'
 import { fadeUp, stagger } from '@/lib/site'
 
 // b/p/m … 口型相同、靠手势区分
@@ -200,6 +201,9 @@ export function About() {
           </Reveal>
         </div>
       </section>
+
+      {/* 学术与开源基石 */}
+      <TechFoundation />
     </div>
   )
 }

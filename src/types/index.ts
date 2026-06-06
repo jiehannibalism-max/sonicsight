@@ -41,6 +41,10 @@ export interface TrainingAction {
   summary: string
   duration: string
   steps: string[]
+  goal?: string // 训练目标(要练什么能力)
+  rationale?: string // 临床/科学原理(为什么有效)
+  criteria?: string // 达标标准(练到什么程度算过)
+  progression?: string // 进阶方向
 }
 
 export interface AgentResult {
