@@ -1,16 +1,9 @@
 import { useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Mic,
-  Gauge,
-  FileText,
-  ListChecks,
-  Play,
-  Check,
-  Clock,
-} from 'lucide-react'
+import { Mic, Gauge, FileText, ListChecks, Check, Clock } from 'lucide-react'
 import { SectionTraining } from '@/components/site/SectionTraining'
 import { SectionHead, Reveal } from '@/components/site/Reveal'
+import { VoiceCapture } from '@/components/site/VoiceCapture'
 import { MOCK_EVALUATION, getMockAgent } from '@/lib/mock'
 import type { Audience } from '@/types'
 import { cn } from '@/lib/utils'
@@ -55,9 +48,10 @@ export function Studio() {
             lead="识别音素只是第一步。系统把五维评分解读成自然语言诊断，再生成个性化训练建议——而且会按家长、老师、孩子不同对象，换不同的说法。"
           />
 
-          {/* controls */}
-          <Reveal className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          {/* audience + real voice capture */}
+          <Reveal className="mt-8 flex justify-center">
             <div className="inline-flex rounded-full border border-border bg-card p-1">
+              <span className="px-3 py-2 text-sm text-muted-foreground">反馈对象</span>
               {AUDS.map((a) => (
                 <button
                   key={a.id}
@@ -72,13 +66,10 @@ export function Studio() {
                 </button>
               ))}
             </div>
-            <button
-              onClick={run}
-              className="inline-flex items-center gap-2 rounded-full bg-amber px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-amber/20 transition-transform hover:-translate-y-0.5"
-            >
-              <Play className="h-4 w-4" />
-              {step === -1 ? '运行完整流程' : '重新运行'}
-            </button>
+          </Reveal>
+
+          <Reveal className="mx-auto mt-6 max-w-2xl">
+            <VoiceCapture onComplete={run} />
           </Reveal>
 
           {/* pipeline */}
@@ -188,12 +179,6 @@ export function Studio() {
                 </AnimatePresence>
               </div>
             </div>
-          )}
-
-          {step === -1 && (
-            <Reveal className="mt-10 rounded-3xl border border-dashed border-border bg-card/50 p-10 text-center text-muted-foreground">
-              👆 选择对象，点「运行完整流程」，看一份发音如何走完识别→诊断→建议
-            </Reveal>
           )}
 
           {done && (

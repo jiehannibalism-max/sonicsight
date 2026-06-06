@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Hand, Smile, AudioLines, Check } from 'lucide-react'
+import { Hand, Smile, AudioLines, Check, X, Layers, Crosshair, Waypoints, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SectionHead, Reveal } from './Reveal'
 
@@ -13,7 +13,29 @@ const TRACKS = [
   { key: 'audio', label: '声音', icon: AudioLines, raw: 410, color: '#e0934a', cap: '声音最后到 🔊' },
 ] as const
 
-const STRATEGIES = ['时间戳粗对齐', '互相关精对齐', 'DTW 动态时间规整']
+const STEPS = [
+  {
+    icon: Layers,
+    n: '①',
+    title: '时间戳粗对齐',
+    analogy: '像给三路各发一个计时器，先按大致起点把它们切成对应的片段。',
+    tech: '以毫秒级时间戳为锚点，把手势 / 唇动 / 声音切成同名音节区间，先消掉「整段错位」。',
+  },
+  {
+    icon: Crosshair,
+    n: '②',
+    title: '互相关精对齐',
+    analogy: '像调音师对齐两条音轨——来回滑动，找到最「合拍」的那个位置。',
+    tech: '在 ±300ms 内滑动计算三路特征的互相关，相关性峰值即最优偏移量，锁定到帧级。',
+  },
+  {
+    icon: Waypoints,
+    n: '③',
+    title: 'DTW 动态时间规整',
+    analogy: '像导航动态绕开拥堵——允许局部快一点、慢一点，弹性地一一对上。',
+    tech: '用动态时间规整逐帧软对齐，吸收个体语速差异，让三路最终在每一帧上精确配准。',
+  },
+]
 
 export function SectionAlignment() {
   const [aligned, setAligned] = useState(false)
@@ -34,7 +56,6 @@ export function SectionAlignment() {
   const headMs = head * WINDOW_MS
   const evMs = (t: (typeof TRACKS)[number]) => (aligned ? 250 : t.raw)
 
-  // narrated caption follows the playhead (only in "对齐前")
   let caption = '三路信号在时间轴上是错开的'
   if (aligned) {
     caption = '三路拉齐 → 系统确认这是同一个「妈」'
@@ -48,18 +69,25 @@ export function SectionAlignment() {
       <div className="mx-auto max-w-5xl">
         <SectionHead
           kicker="时间对齐 · 我们最硬核的一步"
-          title={<>手，总是比嘴快半拍</>}
-          lead="说一个「妈」，手势会比嘴唇早 144–239 毫秒出现，声音还要更晚。这不是误差，是 Cued Speech 的生理规律。不把三路在时间上拉齐，融合就会失败。"
+          title={<>手，总是比嘴快半拍——这反而是我们的优势</>}
+          lead="说一个「妈」，手势会比嘴唇早出现，声音还要更晚。这不是误差，是 Cued Speech 的生理规律。别人的系统把三路「强行同步」，结果把音听错；我们把它们「聪明地对齐」，所以听得准。"
         />
 
-        <Reveal className="mt-12">
+        {/* 大数字带 */}
+        <Reveal className="mt-10 grid gap-3 sm:grid-cols-3">
+          <Stat big="144–239" unit="ms" label="手势天生领先唇动" sub="Cued Speech 生理规律，非系统延迟" />
+          <Stat big="3" unit="路" label="手势 · 唇动 · 声音同时入" sub="缺一路，识别就不稳" />
+          <Stat big="3" unit="级" label="粗 → 精 → 弹性 逐级对齐" sub="对到帧级，再做融合" />
+        </Reveal>
+
+        {/* 交互时间轴 */}
+        <Reveal className="mt-8">
           <div className="rounded-3xl border border-border bg-card p-6 shadow-xl shadow-teal/5 sm:p-8">
-            {/* demo syllable + toggle */}
             <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">🐴</span>
                 <div>
-                  <p className="text-xs text-muted-foreground">正在演示</p>
+                  <p className="text-xs text-muted-foreground">拖动开关，看错位是怎么被拉齐的</p>
                   <p className="text-xl font-semibold text-ink">说「妈」 → ma</p>
                 </div>
               </div>
@@ -85,7 +113,6 @@ export function SectionAlignment() {
               </div>
             </div>
 
-            {/* narrated caption */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={caption}
@@ -103,7 +130,6 @@ export function SectionAlignment() {
               </motion.div>
             </AnimatePresence>
 
-            {/* timeline */}
             <div className="space-y-5">
               {TRACKS.map((t) => {
                 const pct = (evMs(t) / WINDOW_MS) * 100
@@ -138,7 +164,6 @@ export function SectionAlignment() {
                 )
               })}
 
-              {/* axis + playhead */}
               <div className="relative ml-[4.75rem] h-6">
                 <div className="absolute top-0 h-6 w-px bg-ink/40" style={{ left: `${head * 100}%` }} />
                 {[0, 150, 300, 450, 600].map((ms) => (
@@ -153,7 +178,6 @@ export function SectionAlignment() {
               </div>
             </div>
 
-            {/* bottom: gaps OR strategies */}
             <AnimatePresence mode="wait">
               {!aligned ? (
                 <motion.div
@@ -168,33 +192,93 @@ export function SectionAlignment() {
                 </motion.div>
               ) : (
                 <motion.div
-                  key="strat"
+                  key="ok"
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="mt-7"
+                  className="mt-7 flex items-center gap-2 rounded-2xl border border-teal/20 bg-teal/5 px-5 py-4 text-sm text-teal-deep"
                 >
-                  <p className="mb-3 text-sm text-muted-foreground">系统用三级策略把三路拉齐：</p>
-                  <div className="flex flex-wrap gap-2">
-                    {STRATEGIES.map((s, i) => (
-                      <span
-                        key={s}
-                        className="inline-flex items-center gap-2 rounded-full border border-teal/20 bg-teal/5 px-3.5 py-1.5 text-sm font-medium text-teal-deep"
-                      >
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-teal text-xs text-white">
-                          {i + 1}
-                        </span>
-                        {s}
-                      </span>
-                    ))}
-                  </div>
+                  <Check className="h-5 w-5 shrink-0" />
+                  三路对到同一时刻，融合才有意义——这是后面五维诊断能成立的前提。
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </Reveal>
+
+        {/* 为什么是优势：传统 vs 聆光 */}
+        <Reveal className="mt-16">
+          <h3 className="text-center text-2xl font-semibold text-ink">同一段「妈」，两种系统两种结果</h3>
+          <p className="mx-auto mt-2 max-w-2xl text-center text-muted-foreground">
+            手势、唇动、声音落在不同时刻。怎么处理这半拍的差，直接决定听得对不对。
+          </p>
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
+            <CompareCard
+              variant="bad"
+              tag="传统多模态系统"
+              method="按「同一时刻」硬切三路"
+              chain={['同一帧强行取手势+唇+声', '三路特征其实错开了半拍', '特征对不上、互相干扰']}
+              out="bā"
+              outNote="把「妈」误判成「八」——b / p / m 都是双唇音，靠时序和气流才分得开"
+            />
+            <CompareCard
+              variant="good"
+              tag="聆光 · 三级对齐"
+              method="先各归其位，再融合"
+              chain={['粗对齐切片 → 精对齐找偏移', 'DTW 逐帧弹性配准', '三路特征精准对上']}
+              out="mā"
+              outNote="稳定输出「妈」——把生理性的「半拍差」从干扰变成了可用的信息"
+            />
+          </div>
+          <p className="mt-5 text-center text-xs text-muted-foreground">
+            * 时序差 144–239ms 引自项目策划书核心创新点；上图为机制示意，说明「为何对齐与否会改变识别结果」。
+          </p>
+        </Reveal>
+
+        {/* 怎么做到的：三级机制 */}
+        <Reveal className="mt-16">
+          <h3 className="text-center text-2xl font-semibold text-ink">我们怎么做到的：三级对齐机制</h3>
+          <p className="mx-auto mt-2 max-w-2xl text-center text-muted-foreground">
+            不是「强行拉齐」，而是从粗到精、再到弹性，逐级把三路对到一起。
+          </p>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            {STEPS.map((s, i) => (
+              <div key={s.title} className="relative rounded-3xl border border-border bg-card p-6">
+                {i < STEPS.length - 1 && (
+                  <ArrowRight className="absolute -right-3.5 top-1/2 hidden h-6 w-6 -translate-y-1/2 text-teal/40 md:block" />
+                )}
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal/10 text-teal">
+                    <s.icon className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-xs font-semibold text-amber">{s.n}</p>
+                    <h4 className="text-lg font-semibold text-ink">{s.title}</h4>
+                  </div>
+                </div>
+                <p className="mt-4 text-sm leading-relaxed text-ink">{s.analogy}</p>
+                <p className="mt-3 border-t border-border pt-3 text-xs leading-relaxed text-muted-foreground">
+                  {s.tech}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
+  )
+}
+
+function Stat({ big, unit, label, sub }: { big: string; unit: string; label: string; sub: string }) {
+  return (
+    <div className="rounded-3xl border border-border bg-card p-5 text-center">
+      <p className="text-3xl font-bold text-teal">
+        {big}
+        <span className="ml-1 text-base font-semibold text-amber">{unit}</span>
+      </p>
+      <p className="mt-1 text-sm font-medium text-ink">{label}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{sub}</p>
+    </div>
   )
 }
 
@@ -205,6 +289,68 @@ function Gap({ from, to, ms }: { from: string; to: string; ms: string }) {
         <b className="text-ink">{from}</b> 领先 <b className="text-ink">{to}</b>
       </span>
       <span className="text-lg font-semibold text-amber">{ms}</span>
+    </div>
+  )
+}
+
+function CompareCard({
+  variant,
+  tag,
+  method,
+  chain,
+  out,
+  outNote,
+}: {
+  variant: 'good' | 'bad'
+  tag: string
+  method: string
+  chain: string[]
+  out: string
+  outNote: string
+}) {
+  const good = variant === 'good'
+  return (
+    <div
+      className={cn(
+        'flex flex-col rounded-3xl border p-6',
+        good ? 'border-teal/30 bg-teal/[0.04]' : 'border-amber/30 bg-amber/[0.04]',
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <span
+          className={cn(
+            'flex h-7 w-7 items-center justify-center rounded-full text-white',
+            good ? 'bg-teal' : 'bg-amber',
+          )}
+        >
+          {good ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
+        </span>
+        <span className={cn('text-sm font-semibold', good ? 'text-teal-deep' : 'text-amber')}>{tag}</span>
+      </div>
+      <p className="mt-3 text-base font-medium text-ink">{method}</p>
+      <ol className="mt-4 space-y-2">
+        {chain.map((c, i) => (
+          <li key={c} className="flex items-start gap-2 text-sm text-muted-foreground">
+            <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-semibold text-ink">
+              {i + 1}
+            </span>
+            {c}
+          </li>
+        ))}
+      </ol>
+      <div
+        className={cn(
+          'mt-5 rounded-2xl border p-4',
+          good ? 'border-teal/20 bg-card' : 'border-amber/20 bg-card',
+        )}
+      >
+        <div className="flex items-baseline gap-2">
+          <span className="text-xs text-muted-foreground">输出</span>
+          <span className={cn('font-mono text-3xl font-bold', good ? 'text-teal' : 'text-amber')}>{out}</span>
+          <span className={good ? 'text-teal' : 'text-amber'}>{good ? '✓' : '✗'}</span>
+        </div>
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{outNote}</p>
+      </div>
     </div>
   )
 }

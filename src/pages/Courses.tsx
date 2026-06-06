@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Hand, MapPin, Wind, Waves, Languages, Volume2, PlayCircle } from 'lucide-react'
+import { Hand, MapPin, Wind, Waves, Languages, Volume2, PlayCircle, ExternalLink, BookOpen } from 'lucide-react'
 import { SectionHead, Reveal } from '@/components/site/Reveal'
 import { fadeUp, stagger } from '@/lib/site'
 import { cn } from '@/lib/utils'
@@ -44,6 +44,28 @@ const TIERS = [
     label: '扩展层 · 短句',
     desc: '生活短句，迁移到真实表达。',
     words: ['我爱妈妈', '我要喝水', '谢谢老师', '今天真好', '我们回家', '一起玩吧'],
+  },
+]
+
+// 真实可查的公开学习资源（外链，非自建内容）
+const RESOURCES = [
+  {
+    title: 'National Cued Speech Association',
+    desc: '美国提示语官方组织：手形 / 位置图谱、入门科普、家长指南，权威且免费。',
+    href: 'https://cuedspeech.org',
+    host: 'cuedspeech.org',
+  },
+  {
+    title: 'Cue College 在线课程',
+    desc: '系统的 Cued Speech 在线教学课程，从零基础到进阶，含视频示范。',
+    href: 'https://www.cuecollege.org',
+    host: 'cuecollege.org',
+  },
+  {
+    title: 'Bilibili · 提示语 / 唇读教学',
+    desc: '中文社区里的手势语、唇读与言语康复教学视频合辑，可直接检索观看。',
+    href: 'https://search.bilibili.com/all?keyword=cued%20speech',
+    host: 'search.bilibili.com',
   },
 ]
 
@@ -209,6 +231,40 @@ export function Courses() {
               <b>标准手势示范视频库</b>（500 个常用音节 / 单词，多角度 + 慢动作分解）正在录制中，即将上线。
             </span>
           </Reveal>
+        </div>
+      </section>
+
+      {/* 公开学习资源 */}
+      <section className="px-5 py-16">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            align="left"
+            kicker="延伸学习"
+            title="公开学习资源"
+            lead="在我们的示范视频库上线前，这些是真实可查的权威提示语（Cued Speech）学习资源，家长和老师可以先用起来。"
+          />
+          <div className="mt-8 grid gap-5 sm:grid-cols-3">
+            {RESOURCES.map((r) => (
+              <Reveal key={r.title}>
+                <a
+                  href={r.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex h-full flex-col rounded-3xl border border-border bg-card p-6 transition-colors hover:border-teal/40"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber/10 text-amber">
+                      <BookOpen className="h-5 w-5" />
+                    </span>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-teal" />
+                  </div>
+                  <h4 className="mt-4 text-base font-semibold text-ink">{r.title}</h4>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{r.desc}</p>
+                  <span className="mt-4 font-mono text-xs text-teal">{r.host}</span>
+                </a>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
     </div>
