@@ -6,6 +6,7 @@ import { Alignment } from '@/pages/Alignment'
 import { Diagnosis } from '@/pages/Diagnosis'
 import { Studio } from '@/pages/Studio'
 import { Courses } from '@/pages/Courses'
+import { Impact } from '@/pages/Impact'
 import { About } from '@/pages/About'
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/diagnosis" element={<Diagnosis />} />
         <Route path="/studio" element={<Studio />} />
         <Route path="/courses" element={<Courses />} />
+        <Route path="/impact" element={<Impact />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<Home />} />
       </Route>

@@ -9,6 +9,7 @@ export const ROUTES = [
   { path: '/diagnosis', label: '五维诊断' },
   { path: '/studio', label: '训练闭环' },
   { path: '/courses', label: '课程体系' },
+  { path: '/impact', label: '应用场景' },
   { path: '/about', label: '了解项目' },
 ] as const
 
